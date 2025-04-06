@@ -115,7 +115,7 @@ def ussd_view(request):
             reference_number = str(uuid.uuid4())[:8]  # Generate a unique reference number
             
             # Send the report data to OpenSpace API (for storage)
-            openspace_url = 'http://127.0.0.1:8001/api/v1/ussd/'  # API URL in OpenSpace project
+            openspace_url = 'http://127.0.0.1:8000/api/v1/ussd/'  # API URL in OpenSpace project
             payload = {
                 'reference_number': reference_number,
                 'phone_number': phone_number,
