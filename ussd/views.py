@@ -60,13 +60,32 @@ def ussd_view(request):
             elif len(steps) == 4 and steps[3] == "2":
                 response = "END Report cancelled. Thank you."
 
+        # elif steps[0] == "2":
+        #     if len(steps) == 1:
+        #         response = "CON Enter your Reference Number to check status:"
+        #     elif len(steps) == 2:
+        #         reference_number = steps[1]
+        #         # Here you can query your DB for status (this is just a placeholder)
+        #         response = f"END Report Status for {reference_number}:\nStatus: Pending"
+
         elif steps[0] == "2":
             if len(steps) == 1:
                 response = "CON Enter your Reference Number to check status:"
             elif len(steps) == 2:
                 reference_number = steps[1]
-                # Here you can query your DB for status (this is just a placeholder)
-                response = f"END Report Status for {reference_number}:\nStatus: Pending"
+                try:
+                    status_url = f'http://127.0.0.1:8000/api/v1/reference-ussd/{reference_number}/'
+                    res = requests.get(status_url)
+                    if res.status_code == 200:
+                        data = res.json()
+                        status = data.get('status', 'Unknown')
+                        response = f"END Report Status for {reference_number}:\nStatus: {status}"
+                    else:
+                        response = f"END No report found with reference {reference_number}."
+                except Exception as e:
+                    print("Error:", str(e))
+                    response = "END Error retrieving status. Please try again later."
+
 
         elif steps[0] == "3":
             response = "END Thank you for using Open Space Management System."
